@@ -1,5 +1,5 @@
-PROGRAM bmax_calc
-!Tool to convert unformatted (binary) angy_phi_pol.fld file to formatted (human readable)
+PROGRAM write
+!Tool to produce example [un]formatted fortran output files
   IMPLICIT NONE
 
     INTEGER :: nunit = 1
