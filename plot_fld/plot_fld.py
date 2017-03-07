@@ -28,6 +28,9 @@ def ftread_longint(name):
     null = np.fromfile(file=name, dtype='>i4', count=1)
     return out
 
+def fthead(name):
+    null = np.fromfile(file=name, dtype='>i4', count=1)
+
 #open fortran-generated binary file
 f = open('prod_msdmp_angy_phi_pol.fld','rb')
 
@@ -49,5 +52,18 @@ print(NUM_REAL_HEADER)
 print(zreal_header)
 
 #read cyclic data
+#header
+fthead(f)
+simtime=np.fromfile(file=f, dtype='>f8', count=1)
+mmin_filter=np.fromfile(file=f, dtype='>i4', count=1)
+im_number=np.fromfile(file=f, dtype='>i4', count=1)
+fthead(f)
+#body
+fthead(f)
+cfftdata=np.fromfile(file=f, dtype='>f8', count=4224)
+fthead(f)
 
-
+print(simtime)
+print(mmin_filter)
+print(im_number)
+print(cfftdata)
