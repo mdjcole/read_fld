@@ -32,21 +32,22 @@ def ftread_longint():
 def fthead():
     null = np.fromfile(file=f, dtype='>i4', count=1)
 
-def cycread(f):
+def cycdat():
 #read cyclic data
 #header
-    fthead(f)
+    fthead()
     simtime=np.fromfile(file=f, dtype='>f8', count=1)
     mmin_filter=np.fromfile(file=f, dtype='>i8', count=1)
     im_number=np.fromfile(file=f, dtype='>i8', count=1)
-    fthead(f)
+    fthead()
 #body
-    fthead(f)
-    cfftlist=np.fromfile(file=f, dtype='>c16', count=4224)
-    fthead(f)
+    fthead()
+    cfftlist=np.fromfile(file=f, dtype='>c16', count=nums*im_number[0])
+    fthead()
 #reshape into array (mode number, radial location)
-    cfftdata=np.reshape(cfftlist,(128,33))
-    return cfftdata
+    cfftdata=np.reshape(cfftlist,(nums,im_number[0]))  
+#return data for all modes at all radial locations
+    return simtime, cfftdata
 
 #switches
 s = 1
@@ -69,23 +70,6 @@ if s:
   sgrid=np.arange(0.,1.,1./nums)
 else:
   sgrid=np.arange(0.,1.,1./nums)**0.5
-  
-def cycdat():
-#read cyclic data
-#header
-    fthead()
-    simtime=np.fromfile(file=f, dtype='>f8', count=1)
-    mmin_filter=np.fromfile(file=f, dtype='>i8', count=1)
-    im_number=np.fromfile(file=f, dtype='>i8', count=1)
-    fthead()
-#body
-    fthead()
-    cfftlist=np.fromfile(file=f, dtype='>c16', count=nums*im_number[0])
-    fthead()
-#reshape into array (mode number, radial location)
-    cfftdata=np.reshape(cfftlist,(nums,im_number[0]))  
-#return data for all modes at all radial locations
-    return simtime, cfftdata
 
 #get values for first time step and normalise
 simtime, cfftdata=cycdat()
