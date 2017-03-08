@@ -1,4 +1,4 @@
-#script for reading binaryangy_x_y.fld files produced by EUTERPE
+#script for reading binary angy_x_y.fld files produced by EUTERPE
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as an
@@ -63,14 +63,7 @@ int_header=ftread_longint()
 NUM_REAL_HEADER=ftread_int()
 zreal_header=ftread_double()
 
-#print(codename)
-#print(VERNUM)
-#print(zverformat)
-#print(NUM_INT_HEADER)
-#print(int_header)
-#print(NUM_REAL_HEADER)
-#print(zreal_header)
-
+#switch for s or r x-axis
 nums=int_header[21]
 if s:
   sgrid=np.arange(0.,1.,1./nums)
@@ -90,13 +83,11 @@ def cycdat():
     cfftlist=np.fromfile(file=f, dtype='>c16', count=nums*im_number[0])
     fthead()
 #reshape into array (mode number, radial location)
-    cfftdata=np.reshape(cfftlist,(128,33))  
+    cfftdata=np.reshape(cfftlist,(nums,im_number[0]))  
+#return data for all modes at all radial locations
     return simtime, cfftdata
 
-#plt.plot(sgrid,phigrid)
-#plt.title(simtime)
-#plt.show()
-
+#get values for first time step and normalise
 simtime, cfftdata=cycdat()
 phigrid=np.absolute(cfftdata[:,26])
 normvar=max(phigrid)
@@ -112,6 +103,8 @@ while 1:
     line1.set_ydata(phigrid)
     fig.canvas.draw()
     fig.canvas.flush_events()
+
+    #get values for next time step
     simtime, cfftdata=cycdat()
     phigrid=np.absolute(cfftdata[:,26])
     normvar=max(phigrid)
