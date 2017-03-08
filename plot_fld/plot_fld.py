@@ -31,6 +31,25 @@ def ftread_longint(name):
 def fthead(name):
     null = np.fromfile(file=name, dtype='>i4', count=1)
 
+def cycread(f):
+#read cyclic data
+#header
+    fthead(f)
+    simtime=np.fromfile(file=f, dtype='>f8', count=1)
+    mmin_filter=np.fromfile(file=f, dtype='>i8', count=1)
+    im_number=np.fromfile(file=f, dtype='>i8', count=1)
+    fthead(f)
+#body
+    fthead(f)
+    cfftlist=np.fromfile(file=f, dtype='>c16', count=4224)
+    fthead(f)
+#reshape into array (mode number, radial location)
+    cfftdata=np.reshape(cfftlist,(128,33))
+    return cfftdata
+
+#switches
+s = 1
+
 #open fortran-generated binary file
 f = open('prod_msdmp_angy_phi_pol.fld','rb')
 
@@ -51,6 +70,13 @@ zreal_header=ftread_double(f)
 #print(NUM_REAL_HEADER)
 #print(zreal_header)
 
+nums=int_header[21]
+if s:
+  sgrid=np.arange(0.,1.,1./nums)
+else:
+  sgrid=np.arange(0.,1.,1./nums)**0.5
+  
+#while 1:
 #read cyclic data
 #header
 fthead(f)
@@ -60,16 +86,12 @@ im_number=np.fromfile(file=f, dtype='>i8', count=1)
 fthead(f)
 #body
 fthead(f)
-cfftlist=np.fromfile(file=f, dtype='>c16', count=4224)
+cfftlist=np.fromfile(file=f, dtype='>c16', count=nums*im_number[0])
 fthead(f)
-
 #reshape into array (mode number, radial location)
-cfftdata=np.reshape(cfftlist,(128,33))
-
+cfftdata=np.reshape(cfftlist,(128,33))  
 #assemble grids for plot
-phigrid=np.absolute(cfftdata[:,25])
-sgrid=np.arange(0.,1.,1./128.)
-
+phigrid=np.absolute(cfftdata[:,26])
 #plot data
 plt.plot(sgrid,phigrid)
 plt.show()
