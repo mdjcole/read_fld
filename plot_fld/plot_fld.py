@@ -99,6 +99,8 @@ def cycdat():
 
 simtime, cfftdata=cycdat()
 phigrid=np.absolute(cfftdata[:,26])
+normvar=max(phigrid)
+phigrid=phigrid/normvar
 
 plt.ion()
 
@@ -106,9 +108,11 @@ fig = plt.figure()
 ax = fig.add_subplot(111)
 line1, = ax.plot(sgrid, phigrid, 'r-')
 
-for i in range(200):
+while 1:
     line1.set_ydata(phigrid)
     fig.canvas.draw()
     fig.canvas.flush_events()
     simtime, cfftdata=cycdat()
     phigrid=np.absolute(cfftdata[:,26])
+    normvar=max(phigrid)
+    phigrid=phigrid/normvar
