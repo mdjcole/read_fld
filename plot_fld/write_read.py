@@ -1,6 +1,7 @@
 #script for reading binaryangy_x_y.fld files produced by EUTERPE
 import numpy as np
-import matplotlib.pyplot as plt
+np.set_printoptions(threshold=np.nan)
+import struct
 
 #functions for reading fortran records - before and after each record is a 4 byte int
 #stating the length of that record in bytes, which must be omitted
@@ -32,44 +33,11 @@ def fthead(name):
     null = np.fromfile(file=name, dtype='>i4', count=1)
 
 #open fortran-generated binary file
-f = open('prod_msdmp_angy_phi_pol.fld','rb')
+f = open('test.dat','rb')
 
 #read header
-codename=ftread_string(f)
-VERNUM=ftread_double(f)
-zverformat=ftread_double(f)
-NUM_INT_HEADER=ftread_int(f)
-int_header=ftread_longint(f)
-NUM_REAL_HEADER=ftread_int(f)
-zreal_header=ftread_double(f)
+cfftdata=ftread_double(f)
+cfftmat=np.reshape(cfftdata,(100,16))
 
-#print(codename)
-#print(VERNUM)
-#print(zverformat)
-#print(NUM_INT_HEADER)
-#print(int_header)
-#print(NUM_REAL_HEADER)
-#print(zreal_header)
-
-#read cyclic data
-#header
-fthead(f)
-simtime=np.fromfile(file=f, dtype='>f8', count=1)
-mmin_filter=np.fromfile(file=f, dtype='>i8', count=1)
-im_number=np.fromfile(file=f, dtype='>i8', count=1)
-fthead(f)
-#body
-fthead(f)
-cfftlist=np.fromfile(file=f, dtype='>c16', count=4224)
-fthead(f)
-
-#reshape into array (mode number, radial location)
-cfftdata=np.reshape(cfftlist,(128,33))
-
-#assemble grids for plot
-phigrid=np.absolute(cfftdata[:,25])
-sgrid=np.arange(0.,1.,1./128.)
-
-#plot data
-plt.plot(sgrid,phigrid)
-plt.show()
+print(cfftdata)
+print(cfftmat)
