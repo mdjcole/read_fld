@@ -32,15 +32,15 @@ def ftread_longint():
 def fthead():
     null = np.fromfile(file=f, dtype='>i4', count=1)
 
+#read cyclic data containing phi/apar radial perturbations for each fourier mode
 def cycdat():
-#read cyclic data
-#header
+#read cyclic header for given timestep
     fthead()
     simtime=np.fromfile(file=f, dtype='>f8', count=1)
     mmin_filter=np.fromfile(file=f, dtype='>i8', count=1)
     im_number=np.fromfile(file=f, dtype='>i8', count=1)
     fthead()
-#body
+#read body
     fthead()
     cfftlist=np.fromfile(file=f, dtype='>c16', count=nums*im_number[0])
     fthead()
@@ -55,7 +55,7 @@ s = 1
 #open fortran-generated binary file
 f = open('prod_msdmp_angy_phi_pol.fld','rb')
 
-#read header
+#read file header
 codename=ftread_string()
 VERNUM=ftread_double()
 zverformat=ftread_double()
